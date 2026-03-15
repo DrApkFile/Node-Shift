@@ -2563,9 +2563,9 @@ pub fn process_instruction(
     U[User Wallet] -->|1. Call Instruction| P[Rate Program]
     P -->|2. Check Last Ts| PDA[Rate-Limit PDA]
     PDA -->|3. Cooldown Expired?| P
-    P -- No -->|4. Revert| U
-    P -- Yes -->|5. Update Ts| PDA
-    P -- Yes -->|6. Execute Logic| P`
+    P -->|No: Revert| U
+    P -->|Yes: Update Ts| PDA
+    P -->|Yes: Execute Logic| P`
     }
   },
   {
@@ -4903,8 +4903,8 @@ pub fn process_instruction(
     Client[Client/DApp] -->|1. Generate Key| Client
     Client -->|2. Call Instruction with Key| Program[Idempotency Program]
     Program -->|3. Try Initialize| NoncePDA[Nonce Account PDA]
-    NoncePDA -- Success -->|First Call| Action[Execute Business Logic]
-    NoncePDA -- Error -->|Duplicate Call| Revert[Transaction Reverts]
+    NoncePDA -->|Success: First Call| Action[Execute Business Logic]
+    NoncePDA -->|Error: Duplicate Call| Revert[Transaction Reverts]
     Action -->|Record Used| NoncePDA`
     }
   },
