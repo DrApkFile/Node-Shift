@@ -1,0 +1,209 @@
+{
+  "address": "J3cTELeaZPRUd1qGHrDW6mxi9Hyz3egMs9unqVQsxny6",
+  "metadata": {
+    "name": "anchor_rate_limiter",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "access_resource",
+      "discriminator": [
+        105,
+        212,
+        130,
+        207,
+        4,
+        156,
+        24,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "rate_limiter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  45,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_limiter",
+      "discriminator": [
+        98,
+        162,
+        242,
+        39,
+        168,
+        33,
+        187,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "rate_limiter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  45,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_limiter",
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "In Anchor, we can use `Clock::get()?.slot` to determine \"Time\" relative to the blockchain.",
+        "We use a custom account per user to track their specific usage."
+      ],
+      "discriminator": [
+        151,
+        136,
+        41,
+        55,
+        254,
+        249,
+        167,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "rate_limiter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  101,
+                  45,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "RateLimiterAccount",
+      "discriminator": [
+        243,
+        167,
+        245,
+        71,
+        161,
+        151,
+        173,
+        62
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "RateLimitExceeded",
+      "msg": "Too Many Requests. Rate limit exceeded on-chain."
+    }
+  ],
+  "types": [
+    {
+      "name": "RateLimiterAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "last_request_slot",
+            "type": "u64"
+          },
+          {
+            "name": "request_count",
+            "type": "u16"
+          }
+        ]
+      }
+    }
+  ]
+}

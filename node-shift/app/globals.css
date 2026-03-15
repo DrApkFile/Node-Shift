@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-outfit: var(--font-outfit);
+
+  --color-background: oklch(0% 0 0);
+  --color-foreground: oklch(98% 0 0);
+
+  --color-card: oklch(10% 0 0);
+  --color-card-foreground: oklch(98% 0 0);
+
+  --color-popover: oklch(10% 0 0);
+  --color-popover-foreground: oklch(98% 0 0);
+
+  --color-primary: oklch(65% 0.2 250);
+  --color-primary-foreground: oklch(100% 0 0);
+
+  --color-secondary: oklch(20% 0 0);
+  --color-secondary-foreground: oklch(98% 0 0);
+
+  --color-muted: oklch(20% 0 0);
+  --color-muted-foreground: oklch(60% 0 0);
+
+  --color-accent: oklch(20% 0 0);
+  --color-accent-foreground: oklch(98% 0 0);
+
+  --color-destructive: oklch(50% 0.2 25);
+  --color-destructive-foreground: oklch(98% 0 0);
+
+  --color-border: oklch(20% 0 0);
+  --color-input: oklch(20% 0 0);
+  --color-ring: oklch(65% 0.2 250);
+
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}

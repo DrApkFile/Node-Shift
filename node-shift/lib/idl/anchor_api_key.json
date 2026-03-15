@@ -1,0 +1,212 @@
+{
+  "address": "BdmZeEzG8eNqNGxtMQ1YP8ZDPy1Di4JkTLYQWkrwpsQA",
+  "metadata": {
+    "name": "anchor_api_key",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close_registry",
+      "discriminator": [
+        76,
+        32,
+        154,
+        180,
+        51,
+        159,
+        218,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "api_key_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  105,
+                  45,
+                  107,
+                  101,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "api_key_registry"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_key",
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "Anchor is the \"Ruby on Rails\" or \"NestJS\" of Solana.",
+        "It hides the tedious manual account parsing we saw in Native Rust."
+      ],
+      "discriminator": [
+        134,
+        13,
+        253,
+        34,
+        169,
+        203,
+        52,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "api_key_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  105,
+                  45,
+                  107,
+                  101,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "key_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "revoke_key",
+      "discriminator": [
+        162,
+        44,
+        180,
+        118,
+        135,
+        106,
+        115,
+        232
+      ],
+      "accounts": [
+        {
+          "name": "api_key_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  105,
+                  45,
+                  107,
+                  101,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "api_key_registry"
+          ]
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ApiKeyRegistry",
+      "discriminator": [
+        53,
+        166,
+        210,
+        161,
+        230,
+        244,
+        177,
+        58
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "ApiKeyRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "key_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}

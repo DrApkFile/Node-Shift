@@ -1,0 +1,299 @@
+{
+  "address": "EC6dqnTdQFabKC4qzf5jzLhEDDLRZ2XyhzFYhTNF2cHQ",
+  "metadata": {
+    "name": "anchor_leader_election",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "election_state",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "electoral_pool",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "epoch_duration",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "register_candidate",
+      "discriminator": [
+        91,
+        136,
+        96,
+        222,
+        242,
+        4,
+        160,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "electoral_pool",
+          "writable": true
+        },
+        {
+          "name": "candidate",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_election",
+      "discriminator": [
+        223,
+        195,
+        95,
+        245,
+        232,
+        188,
+        247,
+        111
+      ],
+      "accounts": [
+        {
+          "name": "election_state",
+          "writable": true
+        },
+        {
+          "name": "electoral_pool",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "seed_candidates",
+      "discriminator": [
+        246,
+        173,
+        36,
+        181,
+        49,
+        203,
+        254,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "electoral_pool",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "candidates",
+          "type": {
+            "vec": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "vote",
+      "discriminator": [
+        227,
+        110,
+        155,
+        23,
+        136,
+        126,
+        172,
+        25
+      ],
+      "accounts": [
+        {
+          "name": "electoral_pool",
+          "writable": true
+        },
+        {
+          "name": "voter",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "candidate_index",
+          "type": "u8"
+        },
+        {
+          "name": "weight",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ElectionState",
+      "discriminator": [
+        216,
+        29,
+        194,
+        87,
+        179,
+        211,
+        165,
+        19
+      ]
+    },
+    {
+      "name": "ElectoralPool",
+      "discriminator": [
+        198,
+        132,
+        123,
+        239,
+        6,
+        184,
+        16,
+        97
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ElectionResolved",
+      "discriminator": [
+        71,
+        38,
+        177,
+        250,
+        127,
+        51,
+        198,
+        137
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyCandidate",
+      "msg": "Candidate is already registered."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidCandidate",
+      "msg": "Invalid candidate index."
+    },
+    {
+      "code": 6002,
+      "name": "EpochNotEnded",
+      "msg": "Current epoch has not ended yet."
+    }
+  ],
+  "types": [
+    {
+      "name": "Candidate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "votes",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ElectionResolved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "leader",
+            "type": "pubkey"
+          },
+          {
+            "name": "votes",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ElectionState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "active_leader",
+            "type": "pubkey"
+          },
+          {
+            "name": "epoch_end",
+            "type": "i64"
+          },
+          {
+            "name": "epoch_duration",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ElectoralPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "candidates",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Candidate"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

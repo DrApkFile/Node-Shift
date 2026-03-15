@@ -1,0 +1,127 @@
+{
+  "address": "GDXdtax9eoW2DSDQUkweFdEwyMq8foKRq3oo56hZUQM",
+  "metadata": {
+    "name": "anchor_leaderboard",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "In Anchor, we manage the leaderboard as a single account",
+        "containing a vector of scores.",
+        "This is like a single row in a database that stores a JSON array of top scores."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "leaderboard",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "submit_score",
+      "discriminator": [
+        212,
+        128,
+        45,
+        22,
+        112,
+        82,
+        85,
+        235
+      ],
+      "accounts": [
+        {
+          "name": "leaderboard",
+          "writable": true
+        },
+        {
+          "name": "player",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "score",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Leaderboard",
+      "discriminator": [
+        247,
+        186,
+        238,
+        243,
+        194,
+        30,
+        9,
+        36
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Leaderboard",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "entries",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ScoreEntry"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScoreEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "player",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

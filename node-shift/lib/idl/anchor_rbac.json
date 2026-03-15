@@ -1,0 +1,288 @@
+{
+  "accounts": [
+    {
+      "discriminator": [
+        32,
+        37,
+        119,
+        205,
+        179,
+        180,
+        13,
+        194
+      ],
+      "name": "UserProfile"
+    }
+  ],
+  "address": "txyHnTyAi8MiVFy3ZLQeqJiCHKt3FuJx2gg2pvab8T9",
+  "errors": [
+    {
+      "code": 6000,
+      "msg": "You do not have the required permissions to perform this action.",
+      "name": "Unauthorized"
+    },
+    {
+      "code": 6001,
+      "msg": "The provided role ID is invalid.",
+      "name": "InvalidRole"
+    }
+  ],
+  "instructions": [
+    {
+      "accounts": [
+        {
+          "name": "user_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  45,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        166,
+        235,
+        178,
+        75,
+        64,
+        94,
+        91,
+        13
+      ],
+      "name": "admin_only_instruction"
+    },
+    {
+      "accounts": [
+        {
+          "name": "user_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  45,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "writable": true
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        167,
+        36,
+        181,
+        8,
+        136,
+        158,
+        46,
+        207
+      ],
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "In Anchor, we use \"Account Constraints\" to handle RBAC declaratively.",
+        "Instead of checking `if (user.role == 'ADMIN')` in the function body,",
+        "we do it in the `Accounts` struct using the `constraint` attribute."
+      ],
+      "name": "close_profile"
+    },
+    {
+      "accounts": [
+        {
+          "name": "user_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  45,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        140,
+        139,
+        165,
+        129,
+        41,
+        72,
+        16,
+        107
+      ],
+      "name": "editor_instruction"
+    },
+    {
+      "accounts": [
+        {
+          "name": "user_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  45,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "writable": true
+        },
+        {
+          "address": "11111111111111111111111111111111",
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": "u8"
+        }
+      ],
+      "discriminator": [
+        194,
+        210,
+        118,
+        176,
+        140,
+        105,
+        99,
+        174
+      ],
+      "name": "initialize_user_role"
+    }
+  ],
+  "metadata": {
+    "description": "Created with Anchor",
+    "name": "anchor_rbac",
+    "spec": "0.1.0",
+    "version": "0.1.0"
+  },
+  "types": [
+    {
+      "name": "UserProfile",
+      "type": {
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": {
+                "name": "UserRole"
+              }
+            }
+          }
+        ],
+        "kind": "struct"
+      }
+    },
+    {
+      "name": "UserRole",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Viewer"
+          },
+          {
+            "name": "Editor"
+          },
+          {
+            "name": "Admin"
+          }
+        ]
+      }
+    }
+  ]
+}

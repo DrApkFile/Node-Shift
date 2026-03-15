@@ -1,0 +1,159 @@
+{
+  "address": "7AgxB5wUW2tYksiWXW9pvmdiGCKRYSgL5sNcuXSm7Z5T",
+  "metadata": {
+    "name": "anchor_job_queue",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "post_job",
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "In Anchor, we can utilize `init` and `Signer` to manage job lifecycles.",
+        "The `status` field transition is protected by procedural checks in the instruction."
+      ],
+      "discriminator": [
+        34,
+        208,
+        58,
+        248,
+        129,
+        234,
+        179,
+        211
+      ],
+      "accounts": [
+        {
+          "name": "job_account",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bounty",
+          "type": "u64"
+        },
+        {
+          "name": "delay",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "process_job",
+      "discriminator": [
+        158,
+        19,
+        169,
+        167,
+        92,
+        141,
+        71,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "job_account",
+          "writable": true
+        },
+        {
+          "name": "keeper",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "JobAccount",
+      "discriminator": [
+        91,
+        16,
+        162,
+        5,
+        45,
+        210,
+        125,
+        65
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "JobNotAvailable",
+      "msg": "This job is already claimed or completed."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidJobState",
+      "msg": "The job must be in Claimed status to be completed."
+    },
+    {
+      "code": 6002,
+      "name": "JobNotReady",
+      "msg": "The job trigger condition has not been met yet."
+    }
+  ],
+  "types": [
+    {
+      "name": "JobAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "bounty",
+            "type": "u64"
+          },
+          {
+            "name": "trigger_time",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "JobStatus"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Claimed"
+          },
+          {
+            "name": "Completed"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "address": "DzBV9RhbE5WCNscwPBSwYrCEWFxDRMSkM5oWYKktMonr",
+  "metadata": {
+    "name": "anchor_idempotency",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close_tracker",
+      "discriminator": [
+        147,
+        212,
+        168,
+        239,
+        228,
+        120,
+        194,
+        184
+      ],
+      "accounts": [
+        {
+          "name": "idempotency_tracker",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  100,
+                  101,
+                  109,
+                  112,
+                  111,
+                  116,
+                  101,
+                  110,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "unique_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "_unique_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "process_unique_action",
+      "docs": [
+        "WEB2 DEVELOPER NOTE:",
+        "In Anchor, we use a \"Signer\" and a \"Unique Account\" (PDA)",
+        "to guarantee that a transaction only happens once.",
+        "If the account already exists, Anchor's `init` will fail!"
+      ],
+      "discriminator": [
+        27,
+        214,
+        160,
+        75,
+        179,
+        70,
+        133,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "idempotency_tracker",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  100,
+                  101,
+                  109,
+                  112,
+                  111,
+                  116,
+                  101,
+                  110,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "unique_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "unique_id",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "IdempotencyTracker",
+      "discriminator": [
+        131,
+        86,
+        228,
+        22,
+        223,
+        234,
+        132,
+        168
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "IdempotencyTracker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "unique_id",
+            "type": "u64"
+          },
+          {
+            "name": "processed_at",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
