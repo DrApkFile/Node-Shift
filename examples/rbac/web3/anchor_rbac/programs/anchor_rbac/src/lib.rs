@@ -6,16 +6,36 @@ declare_id!("txyHnTyAi8MiVFy3ZLQeqJiCHKt3FuJx2gg2pvab8T9");
 pub mod anchor_rbac {
     use super::*;
 
-    /// WEB2 DEVELOPER NOTE:
-    /// In Anchor, we use "Account Constraints" to handle RBAC declaratively.
-    /// Instead of checking `if (user.role == 'ADMIN')` in the function body,
-    /// we do it in the `Accounts` struct using the `constraint` attribute.
+    // ============================================================
+    // WEB2 DEVELOPER OVERVIEW
+    // ============================================================
+    // Web2 RBAC typically uses middleware: `checkRole('ADMIN')` in Express,
+    // or `@Roles(Role.Admin)` decorators in NestJS.
+    // On Solana, role checks move into the `#[derive(Accounts)]` struct via `constraint =`.
+    // Unauthorized calls are rejected BEFORE the instruction body even runs.
+    //
+    // All 4 instructions below are [CORE PATTERN LOGIC].
+    //
+    // Key Web2 Concepts Mapped:
+    //   - `users.roles` DB table entry              → `UserProfile` PDA (per-wallet account)
+    //   - `checkRole('ADMIN')` middleware            → `constraint = user_profile.role == UserRole::Admin`
+    //   - Hierarchical role check (Admin || Editor) → constraint with `||` in `EditorOnly` struct
+    //   - `403 Forbidden`                            → `RbacError::Unauthorized` returned by Anchor
+    //   - DELETE user role                           → `close_profile` (closes the PDA)
+    // ============================================================
 
+    /// [CORE PATTERN LOGIC]
+    /// Closes the user's role PDA and returns rent to their wallet.
+    /// Web2 equivalent: `DELETE /users/{id}/roles` — removing a user from the system.
     pub fn close_profile(_ctx: Context<CloseProfile>) -> Result<()> {
         msg!("User profile closed. SOL returned to authority.");
         Ok(())
     }
 
+    /// [CORE PATTERN LOGIC]
+    /// Creates a per-wallet UserProfile PDA storing an enum role (Viewer/Editor/Admin).
+    /// Web2 equivalent: `POST /users/{id}/roles` — assigning a role to a user record in the DB.
+    /// Note: The PDA seeds include the authority's pubkey, so each wallet has exactly one profile.
     pub fn initialize_user_role(ctx: Context<InitializeUser>, role: u8) -> Result<()> {
         let profile = &mut ctx.accounts.user_profile;
         profile.owner = ctx.accounts.authority.key();
@@ -29,11 +49,18 @@ pub mod anchor_rbac {
         Ok(())
     }
 
+    /// [CORE PATTERN LOGIC]
+    /// A gated instruction that only Admins can call.
+    /// The role check lives in `AdminOnly::user_profile` constraint, not here.
+    /// Web2 equivalent: An Express route with `checkRole('ADMIN')` middleware.
     pub fn admin_only_instruction(_ctx: Context<AdminOnly>) -> Result<()> {
         msg!("Access Granted: Admin only instruction executed.");
         Ok(())
     }
 
+    /// [CORE PATTERN LOGIC]
+    /// A gated instruction accessible by Editor OR Admin (hierarchical check).
+    /// Web2 equivalent: `@Roles(Role.Editor, Role.Admin)` in NestJS or `checkRole(['editor','admin'])`.
     pub fn editor_instruction(_ctx: Context<EditorOnly>) -> Result<()> {
         msg!("Access Granted: Editor or Admin instruction executed.");
         Ok(())

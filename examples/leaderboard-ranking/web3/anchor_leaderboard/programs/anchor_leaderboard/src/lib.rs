@@ -6,11 +6,29 @@ declare_id!("GDXdtax9eoW2DSDQUkweFdEwyMq8foKRq3oo56hZUQM");
 pub mod anchor_leaderboard {
     use super::*;
 
-    /// WEB2 DEVELOPER NOTE:
-    /// In Anchor, we manage the leaderboard as a single account 
-    /// containing a vector of scores. 
-    /// This is like a single row in a database that stores a JSON array of top scores.
+    // ============================================================
+    // WEB2 DEVELOPER OVERVIEW
+    // ============================================================
+    // Web2 leaderboards use Redis Sorted Sets (`ZADD`, `ZREVRANGE`)
+    // or a DB table with an indexed score column.
+    // On Solana, the leaderboard is a single PDA account holding a Vec.
+    // Space is preallocated at creation, so max entries are fixed at compile time.
+    //
+    // All 2 instructions below are [CORE PATTERN LOGIC].
+    //
+    // Key Web2 Concepts Mapped:
+    //   - Redis `ZADD leaderboard score player`  → `submit_score` (push + sort + truncate)
+    //   - Redis `ZREVRANGE leaderboard 0 9`      → Fetch the Leaderboard PDA and read `.entries`
+    //   - Database INSERT with upsert on score   → push + sort (no upsert — multiple entries allowed)
+    //   - Capped top-10 list                     → `entries.truncate(10)` after each sort
+    //   - Admin-only setup                       → `initialize` requires an `admin: Signer`
+    // ============================================================
 
+    /// [CORE PATTERN LOGIC]
+    /// Creates the on-chain leaderboard account with a pre-allocated fixed capacity.
+    /// Web2 equivalent: Creating a `leaderboard` table in your DB, or a Redis sorted set.
+    /// Important: Space is fixed at `8 + 4 + (10 * 40)` bytes; increasing capacity requires
+    /// closing and re-creating the account (on-chain accounts cannot be resized).
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let leaderboard = &mut ctx.accounts.leaderboard;
         leaderboard.entries = Vec::new();
@@ -18,6 +36,10 @@ pub mod anchor_leaderboard {
         Ok(())
     }
 
+    /// [CORE PATTERN LOGIC]
+    /// Submits a score, keeps the list sorted descending, and caps to top 10.
+    /// Web2 equivalent: `ZADD leaderboard score player` + `ZREMRANGEBYRANK leaderboard 0 -11`.
+    /// Note: The player's wallet pubkey is their identity — no username, no auth token.
     pub fn submit_score(ctx: Context<SubmitScore>, score: u64) -> Result<()> {
         let leaderboard = &mut ctx.accounts.leaderboard;
         let player = ctx.accounts.player.key();

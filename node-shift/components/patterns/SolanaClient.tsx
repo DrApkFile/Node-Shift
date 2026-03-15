@@ -35,7 +35,7 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
 
   // Balances & State
   const [solBalance, setSolBalance] = useState<number | null>(null)
-  const [mintAddress, setMintAddress] = useState<string>("")
+  const [mintAddress, setMintAddress] = useState<string>("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
   const [amount, setAmount] = useState<string>("100")
   const [escrowId, setEscrowId] = useState<string>("1")
 
@@ -1566,7 +1566,12 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                       </div>
                       <div className="space-y-2">
                         <Label className="text-[10px] uppercase font-black tracking-widest text-gray-400">Mock Mint Address</Label>
-                        <Input value={mintAddress} onChange={(e) => setMintAddress(e.target.value)} placeholder="0x..." className="bg-black/60 border-white/10 h-14 font-mono text-white text-[10px]" />
+                        <Input
+                          value={mintAddress}
+                          readOnly
+                          disabled
+                          className="bg-black/60 border-white/10 h-14 font-mono text-white/40 text-[10px] cursor-not-allowed opacity-60"
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
