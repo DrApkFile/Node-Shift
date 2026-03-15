@@ -12,8 +12,11 @@ Transitioning from Web2 to Web3 (specifically Solana/Anchor) can be daunting. Yo
 
 **NodeShift** simplifies this journey by:
 - **Speaking your language:** We take common Web2 patterns (RBAC, Rate Limiting, Idempotency, etc.) and explain them in terms you already understand.
-- **Side-by-Side Comparisons:** Every example in this repository features a Web2 implementation (Node.js/Express/Python) alongside its Web3 counterpart (Anchor/Rust).
+- **Side-by-Side Comparisons:** Every example features **6 Web2 implementations** (C#, Go, Node.js, Python FastAPI/Flask, and SpringBoot) alongside its Web3 counterparts in **both Native Rust and Anchor**.
 - **Interactive Demos:** Our web interface lets you visualize how these patterns operate on-chain vs. off-chain.
+
+> [!NOTE]  
+> **Repository vs. Site:** The [NodeShift website](https://node-shift.vercel.app) provides quick code snippets and dependency lists for fast reference. This **GitHub Repository** contains the full environment, complete with build configurations, tests, and extensive documentation for every pattern.
 
 ---
 
@@ -66,45 +69,55 @@ pub struct AdminOnly<'info> {
 }
 ``` |
 
-### 3. Escrow (Trusted Intermediary)
-In Web2, you trust a third party (Stripe, PayPal) to hold funds. In Web3, the **Program** (Smart Contract) acts as the trustless intermediary.
-
-| **Web2 (Platform API)** | **Web3 (On-chain Vault)** |
-| :--- | :--- |
-| ```javascript
-// Trusting a centralized DB
-const escrow = { 
-  buyer, seller, amount, status: 'PENDING' 
-};
-db.save(escrow);
-``` | ```rust
-// Transferring tokens to a 
-// program-owned PDA vault
-token::transfer(
-  CpiContext::new(token_program, Transfer {
-    from: buyer_account,
-    to: vault_pda,
-    authority: buyer,
-  }),
-  amount
-)?;
-``` |
-
 ---
 
 ## 🛠️ Repository Structure
 
-The `examples/` directory contains folders for each pattern, each containing:
-- `/web2`: Implementations in C#, Go, JS, Python, and SpringBoot.
-- `/web3`: The Anchor/Solana implementation and a native Rust version.
-- `README.md`: A detailed breakdown of the technical mapping between the two.
+The `examples/` directory is organized into pattern-specific folders:
+
+- **`/web2`**: Contains implementations in 6 popular languages:
+  - `csharp`, `go`, `js` (Node.js), `python-fastapi`, `python-flask`, `springboot`.
+- **`/web3`**: Contains two implementations for Solana:
+  - `anchor_<pattern>`: High-level Anchor framework implementation.
+  - `native-rust`: Low-level Solana implementation using the native Rust SDK.
 
 ---
 
-## 🌟 Get Started
+## ⚙️ Setup & Requirements
 
-1. **Explore the Code:** Dive into the `examples/` directory to see how your favorite language implements these patterns.
-2. **Visit the Playground:** Head over to [node-shift.vercel.app](https://node-shift.vercel.app) to see these patterns in a live, interactive environment.
-3. **Contribute:** Have a pattern you want to see? Open a PR or an issue!
+To explore the Web3 examples in this repository, you'll need the following tools:
+
+### Prerequisites
+- [**Rust**](https://www.rust-lang.org/tools/install) (latest stable)
+- [**Solana CLI**](https://docs.solanalabs.com/cli/install) (for native Rust development)
+- [**Anchor CLI**](https://www.anchor-lang.com/docs/installation) (for high-level framework development)
+
+### Getting Started
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-username/web2vweb3.git
+   cd web2vweb3
+   ```
+
+2. **Explore a Pattern (e.g., Escrow):**
+   ```bash
+   cd examples/escrow-engine/web3/anchor_escrow
+   anchor build
+   anchor test
+   ```
+
+3. **Check Native Rust:**
+   ```bash
+   cd examples/escrow-engine/web3/native-rust
+   cargo build-bpf # Build the native program
+   ```
+
+---
+
+## 🌟 Get Involved
+
+1. **Dive Deep:** Use the repository to explore full environments and detailed comments.
+2. **Visualize:** Visit the [Playground](https://node-shift.vercel.app) to see the code snippets and dependencies in action.
+3. **Contribute:** Join our mission to bridge the dev gap. Open a PR to add a new pattern or language implementation!
 
 NodeShift is here to turn your "Web2 brain" into a "Web3 powerhouse." Happy building! 🦀⛓️
