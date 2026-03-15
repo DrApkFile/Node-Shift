@@ -8,7 +8,7 @@ import { CodeBlock } from "@/components/patterns/CodeBlock"
 import { MermaidDiagram } from "@/components/patterns/MermaidDiagram"
 import { SolanaClient } from "@/components/patterns/SolanaClient"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ChevronLeft, Folder, FileCode, Play, ExternalLink, Copy, Check, ChevronDown, ChevronRight, Wallet } from "lucide-react"
+import { ChevronLeft, Folder, FileCode, Play, ExternalLink, Copy, Check, ChevronDown, ChevronRight, Wallet, Github } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -111,6 +111,16 @@ export function PatternViewer({ pattern }: PatternViewerProps) {
             </div>
 
             <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                asChild
+                className="h-10 border-white/10 text-white hover:bg-white/10 rounded-full text-xs font-bold uppercase tracking-widest gap-2"
+              >
+                <a href={pattern.githubUrl} target="_blank">
+                  <Github className="h-4 w-4" />
+                  View on GitHub
+                </a>
+              </Button>
               <Button
                 variant="outline"
                 onClick={() => setActiveTab("code")}

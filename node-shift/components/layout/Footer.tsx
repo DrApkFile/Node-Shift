@@ -25,7 +25,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-outfit font-bold uppercase tracking-widest text-xs text-white">Connect</h4>
             <div className="flex items-center gap-4">
-              <a href="https://github.com/DrApkFile" target="_blank" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://github.com/DrApkFile/Node-Shift" target="_blank" className="text-gray-400 hover:text-white transition-colors">
                 <Github className="h-5 w-5" />
               </a>
               <a href="https://x.com/Aghaduno" target="_blank" className="text-gray-400 hover:text-white transition-colors">

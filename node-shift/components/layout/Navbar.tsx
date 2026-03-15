@@ -25,7 +25,7 @@ export function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild className="text-gray-400 hover:text-white hover:bg-white/5">
-            <a href="https://github.com/DrApkFile" target="_blank">
+            <a href="https://github.com/DrApkFile/Node-Shift" target="_blank">
               <Github className="h-5 w-5" />
             </a>
           </Button>

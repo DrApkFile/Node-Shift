@@ -12,6 +12,7 @@ export interface FolderNode {
 export interface Pattern {
   slug: string;
   id: string;
+  githubUrl: string;
   title: string;
   description: string;
   tags: string[];
@@ -57,6 +58,7 @@ export const patterns: Pattern[] = [
   {
     slug: "escrow-engine",
     id: "PATTERN_01",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/escrow-engine",
     title: "Escrow Engine",
     description: "Secure, trustless multi-party transaction management for decentralized commerce.",
     tags: ["DeFi", "Security", "Classic"],
@@ -684,6 +686,7 @@ pub fn process_instruction(
   {
     slug: "subscription-billing",
     id: "PATTERN_02",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/subscription-billing",
     title: "Subscription Billing",
     description: "Recurring payments and access control for modern on-chain services.",
     tags: ["Payments", "Business"],
@@ -1215,6 +1218,7 @@ pub fn process_instruction(
   {
     slug: "order-matching-engine",
     id: "PATTERN_03",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/order-matching",
     title: "Order Matching",
     description: "High-performance limit order book on-chain for transparent trading.",
     tags: ["DeFi", "Trading"],
@@ -1716,6 +1720,7 @@ pub fn process_instruction(
   {
     slug: "rbac-access-control",
     id: "PATTERN_04",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/rbac",
     title: "RBAC",
     description: "Role-Based Access Control on-chain for secure governance and administration.",
     tags: ["Security", "Infrastructure"],
@@ -2139,6 +2144,7 @@ pub fn process_instruction(
   {
     slug: "rate-limiter",
     id: "PATTERN_05",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/rate-limiter",
     title: "Rate Limiter",
     description: "Instruction frequency management to prevent spam and resource exhaustion on-chain.",
     tags: ["Security", "Infrastructure"],
@@ -2565,7 +2571,8 @@ pub fn process_instruction(
   {
     slug: "on-chain-job-queue",
     id: "PATTERN_06",
-    title: "Job Queue",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/onchain-job-queue",
+    title: "On-Chain Job Queue",
     description: "Asynchronous task execution.",
     tags: ["Infrastructure"],
     theory: "In Web2 architectures, job queues like Celery or BullMQ rely on persistent background workers and message brokers to handle asynchronous tasks. On Solana, the blockchain itself acts as the state store for the queue, but it lacks a built-in scheduler to trigger executions. Developers must implement 'crank' or 'keeper' patterns where external bots are incentivized to call specific processing instructions when certain conditions are met. This shift moves the responsibility of execution from a managed server to a decentralized network of actors who compete or are rewarded for maintaining system state.",
@@ -3116,6 +3123,7 @@ pub fn process_instruction(
   {
     slug: "api-key-management",
     id: "PATTERN_07",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/api-key-management",
     title: "API Key Management",
     description: "Secure on-chain credentials.",
     tags: ["Security"],
@@ -3584,6 +3592,7 @@ pub fn process_instruction(
   {
     slug: "leaderboard-ranking",
     id: "PATTERN_08",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/leaderboard-ranking",
     title: "Leaderboard",
     description: "Global score tracking.",
     tags: ["Gaming", "Social"],
@@ -3976,6 +3985,7 @@ pub fn process_instruction(
   {
     slug: "auction-engine",
     id: "PATTERN_09",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/auction-engine",
     title: "Auction Engine",
     description: "Trustless bidding logic.",
     tags: ["DeFi", "NFTs"],
@@ -4497,6 +4507,7 @@ pub fn process_instruction(
   {
     slug: "idempotency-key",
     id: "PATTERN_10",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/idempotency",
     title: "Idempotency",
     description: "Single-execution enforcement.",
     tags: ["Reliability"],
@@ -4900,6 +4911,7 @@ pub fn process_instruction(
   {
     slug: "circuit-breaker",
     id: "PATTERN_11",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/circuit-breaker",
     title: "Circuit Breaker",
     description: "Fail-safe pausing mechanism.",
     tags: ["Security", "Reliability"],
@@ -5405,6 +5417,7 @@ pub fn process_instruction(
   {
     slug: "leader-election",
     id: "PATTERN_12",
+    githubUrl: "https://github.com/DrApkFile/Node-Shift/tree/master/examples/leader-election",
     title: "Leader Election",
     description: "Ranked voting and scoring.",
     tags: ["Infrastructure"],
