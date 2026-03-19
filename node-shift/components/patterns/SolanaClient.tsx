@@ -97,6 +97,11 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
   const [prevLeader, setPrevLeader] = useState<string | null>(null)
   const [reputationScore] = useState<number>(Math.floor(Math.random() * 100) + 1) // Simulated reputation
 
+  // Auction State
+  const [auctionAccount, setAuctionAccount] = useState<any>(null)
+  const [bidAmount, setBidAmount] = useState<string>("")
+  const [startPrice, setStartPrice] = useState<string>("1.5")
+
   // Anchor Program Setup
   const program = useMemo(() => {
     const config = IDL_REGISTRY[pattern.slug as PatternSlug]
@@ -229,6 +234,17 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
             }
           } catch (e) {
             console.warn("Election state sync failed or not found")
+          }
+        } else if (pattern.slug === "auction-engine") {
+          try {
+            const auctions = await (program as any).account.auctionAccount.all()
+            if (auctions.length > 0) {
+              setAuctionAccount(auctions[0].account)
+            } else {
+              setAuctionAccount(null)
+            }
+          } catch (e) {
+            console.warn("Auction account sync failed")
           }
         }
       } catch (e) {
@@ -1359,6 +1375,68 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
     }
   }
 
+  const handleInitializeAuction = async () => {
+    if (!program || !wallet.publicKey) return
+    setLoading(true)
+    setTxSig(null)
+    try {
+      const auctionKeypair = Keypair.generate()
+      const priceLamports = new anchor.BN(parseFloat(startPrice) * LAMPORTS_PER_SOL)
+
+      const tx = await (program.methods as any)
+        .initializeAuction(priceLamports)
+        .accounts({
+          auctionAccount: auctionKeypair.publicKey,
+          seller: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([auctionKeypair])
+        .rpc()
+
+      setTxSig(tx)
+      toast.success(`Auction Initialized at ${startPrice} SOL!`)
+    } catch (e: any) {
+      console.error(e)
+      toast.error(`Initialization Failed: ${e.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePlaceBid = async () => {
+    if (!program || !wallet.publicKey) return
+    setLoading(true)
+    setTxSig(null)
+    try {
+      const allAuctions = await (program as any).account.auctionAccount.all()
+      if (allAuctions.length === 0) {
+        toast.error("No active auction found.")
+        return
+      }
+
+      const amountLamports = new anchor.BN(parseFloat(bidAmount) * LAMPORTS_PER_SOL)
+      const tx = await (program.methods as any)
+        .placeBid(amountLamports)
+        .accounts({
+          auctionAccount: allAuctions[0].publicKey,
+          bidder: wallet.publicKey,
+        })
+        .rpc()
+
+      setTxSig(tx)
+      toast.success(`Bid of ${bidAmount} SOL Accepted!`)
+    } catch (e: any) {
+      console.error(e)
+      if (e.message.includes("BidTooLow")) {
+        toast.error("Bid too low!", { description: "You must outbid the current highest bidder." })
+      } else {
+        toast.error(`Bid failed: ${e.message}`)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (!wallet.connected) {
     return (
       <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
@@ -1468,6 +1546,14 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                     </div>
                   )}
                 </div>
+              ) : pattern.slug === "auction-engine" ? (
+                <div className="flex items-center gap-3">
+                  {auctionAccount ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <Circle className="h-5 w-5 text-gray-600" />}
+                  <div className="flex-1">
+                    <p className="text-xs font-bold uppercase tracking-wider text-white">Step 2: List Item</p>
+                    <p className="text-[10px] text-gray-500">Initialize a new auction on-chain.</p>
+                  </div>
+                </div>
               ) : (
                 <div className="flex items-center gap-3">
                   {activeLimiter ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <Circle className="h-5 w-5 text-gray-600" />}
@@ -1488,7 +1574,7 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                 <div className="flex-1">
                   <p className="text-xs font-bold uppercase tracking-wider text-white">Step 3: Execute Logic</p>
                   <p className="text-[10px] text-gray-500">
-                    {pattern.slug === "escrow-engine" ? "Interact with the Escrow." : pattern.slug === "rbac-access-control" ? "Test permissioned gates." : pattern.slug === "api-key-management" ? "Verify Key identity." : pattern.slug === "idempotency-key" ? "Submit duplicate actions." : "Interact with the Limiter."}
+                    {pattern.slug === "escrow-engine" ? "Interact with the Escrow." : pattern.slug === "rbac-access-control" ? "Test permissioned gates." : pattern.slug === "api-key-management" ? "Verify Key identity." : pattern.slug === "idempotency-key" ? "Submit duplicate actions." : pattern.slug === "auction-engine" ? "Place decentralized bids." : "Interact with the Limiter."}
                   </p>
                 </div>
               </div>

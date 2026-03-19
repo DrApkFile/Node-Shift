@@ -8,6 +8,7 @@ import anchorJobQueueIdl from "./anchor_job_queue.json";
 import anchorLeaderboardIdl from "./anchor_leaderboard.json";
 import anchorOrderMatchingIdl from "./anchor_order_matching.json";
 import anchorLeaderElectionIdl from "./anchor_leader_election.json";
+import anchorAuctionIdl from "./anchor_auction.json";
 
 export const IDL_REGISTRY = {
     "escrow-engine": {
@@ -49,6 +50,10 @@ export const IDL_REGISTRY = {
     "leader-election": {
         idl: anchorLeaderElectionIdl,
         programId: "EC6dqnTdQFabKC4qzf5jzLhEDDLRZ2XyhzFYhTNF2cHQ",
+    },
+    "auction-engine": {
+        idl: anchorAuctionIdl,
+        programId: "DEvYCdsNiLK998bxX4EB59pPnuAvrJhgG6VThjZb5T8d",
     },
 };
 
