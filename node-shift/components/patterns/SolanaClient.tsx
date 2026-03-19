@@ -2704,6 +2704,134 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
               </div>
             )}
 
+            {pattern.slug === "auction-engine" && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h3 className="font-outfit font-black uppercase tracking-tighter text-2xl text-white">Vickrey Auction Room</h3>
+                    <p className="text-xs text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                      <Clock className="h-3 w-3 text-primary animate-pulse" />
+                      Live Bidding Session
+                    </p>
+                  </div>
+                  {auctionAccount ? (
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 py-1 px-4 uppercase font-black tracking-widest animate-pulse">
+                      Active Auction
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-gray-500/10 text-gray-400 border-gray-500/20 py-1 px-4 uppercase font-black tracking-widest">
+                      No Active Items
+                    </Badge>
+                  )}
+                </div>
+
+                {!auctionAccount ? (
+                  <div className="bg-black/40 rounded-3xl border border-white/5 p-12 text-center space-y-6">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
+                      <Gavel className="h-10 w-10 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-white font-black uppercase tracking-tight text-xl">Initialize New Auction</h4>
+                      <p className="text-gray-500 text-sm max-w-xs mx-auto">Set a starting price to launch an item into the decentralized bidding pool.</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                      <div className="relative flex-1">
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={startPrice}
+                          onChange={(e) => setStartPrice(e.target.value)}
+                          className="bg-white/5 border-white/10 h-14 pl-12 font-mono text-white text-lg rounded-2xl focus:ring-primary/50"
+                        />
+                        <Coins className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-600 uppercase">SOL</div>
+                      </div>
+                      <Button
+                        onClick={handleInitializeAuction}
+                        disabled={loading}
+                        className="h-14 px-8 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 transition-all active:scale-95"
+                      >
+                        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Start Listing"}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div className="md:col-span-7 bg-white/5 rounded-3xl border border-white/10 p-8 space-y-8 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <Trophy className="h-32 w-32 text-white" />
+                      </div>
+
+                      <div className="space-y-6 relative">
+                        <div className="space-y-2">
+                          <Label className="text-[10px] uppercase font-black tracking-[0.3em] text-gray-500">Current Highest Bid</Label>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-6xl font-black text-white tracking-tighter">
+                              {(auctionAccount.highestBid.toNumber() / LAMPORTS_PER_SOL).toFixed(2)}
+                            </span>
+                            <span className="text-xl font-bold text-primary uppercase">SOL</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                            <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest flex items-center gap-2">
+                              <User className="h-3 w-3" /> Seller
+                            </p>
+                            <p className="font-mono text-xs text-white truncate">{auctionAccount.seller.toString()}</p>
+                          </div>
+                          <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                            <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest flex items-center gap-2">
+                              <Trophy className="h-3 w-3 text-yellow-500" /> Top Bidder
+                            </p>
+                            <p className="font-mono text-xs text-white truncate">
+                              {auctionAccount.highestBidder.toString() === SystemProgram.programId.toString() ? "No bids yet" : auctionAccount.highestBidder.toString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-5 flex flex-col gap-6">
+                      <div className="bg-primary/5 rounded-3xl border border-primary/20 p-8 flex-1 space-y-6">
+                        <div className="space-y-2">
+                          <Label className="text-[10px] uppercase font-black tracking-widest text-primary/70">Increment Bid</Label>
+                          <div className="relative">
+                            <Input
+                              type="number"
+                              step="0.1"
+                              value={bidAmount}
+                              onChange={(e) => setBidAmount(e.target.value)}
+                              placeholder="e.g. 2.5"
+                              className="bg-black/40 border-primary/20 h-16 pl-6 text-xl font-black text-white rounded-2xl placeholder:text-gray-600"
+                            />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-primary uppercase">SOL</div>
+                          </div>
+                        </div>
+                        <Button
+                          onClick={handlePlaceBid}
+                          disabled={loading || !bidAmount}
+                          className="w-full h-16 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-[0.2em] text-sm rounded-2xl shadow-xl shadow-primary/10 transition-all active:scale-95 group"
+                        >
+                          {loading ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <>
+                              Place Bid
+                              <ArrowRightLeft className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </>
+                          )}
+                        </Button>
+                        <p className="text-[10px] text-center text-gray-500 uppercase tracking-widest leading-relaxed">
+                          Min Bid: <span className="text-white font-bold">{(auctionAccount.highestBid.toNumber() / LAMPORTS_PER_SOL + 0.001).toFixed(3)} SOL</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {pattern.slug === "leader-election" && (
               <div className="space-y-8">
                 {/* 1. Governance Header */}

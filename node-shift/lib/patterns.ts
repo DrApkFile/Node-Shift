@@ -4338,7 +4338,7 @@ require github.com/redis/go-redis/v9 v9.0.0`)
     },
     web3: {
       explanation: "PDA stores current highest bid and expiry.",
-      programId: "Auct11111111111111111111111111111111111111",
+      programId: "DEvYCdsNiLK998bxX4EB59pPnuAvrJhgG6VThjZb5T8d",
       implementations: [
         {
           name: "Anchor",
@@ -4348,7 +4348,7 @@ require github.com/redis/go-redis/v9 v9.0.0`)
               {
                 name: "lib.rs", language: "rust", content: `use anchor_lang::prelude::*;
 
-declare_id!("Auct11111111111111111111111111111111111111");
+declare_id!("DEvYCdsNiLK998bxX4EB59pPnuAvrJhgG6VThjZb5T8d");
 
 #[program]
 pub mod auction_engine {
