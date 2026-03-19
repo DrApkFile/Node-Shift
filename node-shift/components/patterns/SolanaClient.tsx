@@ -10,8 +10,8 @@ import { Pattern } from "@/lib/patterns"
 import {
   Loader2, Rocket, Wallet, User, ShieldCheck,
   ArrowRightLeft, Info, ExternalLink, Sparkles,
-  Droplets, Coins, CheckCircle2, Circle, Zap, Heart, HeartOff, MessageCircle, Send, Bookmark, MoreHorizontal, Terminal,
-  Clock, Lock, Unlock, Trophy, ShieldAlert, Target, Gavel, Users
+  Droplets, Coins, CheckCircle2, Circle, Zap, ZapOff, Heart, HeartOff, MessageCircle, Send, Bookmark, MoreHorizontal, Terminal,
+  Clock, Lock, Unlock, Trophy, ShieldAlert, Target, Gavel, Users, Activity
 } from "lucide-react"
 import { toast } from "sonner"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
