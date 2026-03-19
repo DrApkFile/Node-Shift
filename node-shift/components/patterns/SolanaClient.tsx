@@ -1641,12 +1641,17 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                     </div>
                   )}
                 </div>
-              ) : pattern.slug === "auction-engine" ? (
+              ) : pattern.slug === "circuit-breaker" ? (
                 <div className="flex items-center gap-3">
-                  {auctionAccount ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <Circle className="h-5 w-5 text-gray-600" />}
+                  {breakerAccount ? <CheckCircle2 className="h-5 w-5 text-green-500" /> : <Circle className="h-5 w-5 text-gray-600" />}
                   <div className="flex-1">
-                    <p className="text-xs font-bold uppercase tracking-wider text-white">Step 2: List Item</p>
-                    <p className="text-[10px] text-gray-500">Initialize a new auction on-chain.</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-white">Step 2: Bootstrap System</p>
+                    <p className="text-[10px] text-gray-500">Initialize on-chain security state.</p>
+                    {!breakerAccount && (
+                      <Button onClick={handleInitializeBreaker} disabled={loading || !solBalance} size="sm" variant="outline" className="mt-2 h-8 text-[10px] rounded-full border-primary/20 text-primary hover:bg-primary/10">
+                        Bootstrap Breaker
+                      </Button>
+                    )}
                   </div>
                 </div>
               ) : (
