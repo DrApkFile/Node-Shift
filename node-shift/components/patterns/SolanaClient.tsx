@@ -11,7 +11,7 @@ import {
   Loader2, Rocket, Wallet, User, ShieldCheck,
   ArrowRightLeft, Info, ExternalLink, Sparkles,
   Droplets, Coins, CheckCircle2, Circle, Zap, ZapOff, Heart, HeartOff, MessageCircle, Send, Bookmark, MoreHorizontal, Terminal,
-  Clock, Lock, Unlock, Trophy, ShieldAlert, Target, Gavel, Users, Activity
+  Clock, Lock, Unlock, Trophy, ShieldAlert, Target, Gavel, Users, Activity, Key
 } from "lucide-react"
 import { toast } from "sonner"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
