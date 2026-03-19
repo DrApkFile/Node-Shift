@@ -1,15 +1,10 @@
 use anchor_lang::prelude::*;
 
-declare_id!("CiRcuiT1111111111111111111111111111111111");
+declare_id!("3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS");
 
 #[program]
 pub mod anchor_circuit_breaker {
     use super::*;
-
-    /// WEB2 DEVELOPER NOTE:
-    /// In Anchor, we can use "Access Control" or "Constraints" to check our 
-    /// Circuit Breaker state before any business logic runs!
-    /// This is equivalent to your Express/FastAPI middleware.
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let breaker = &mut ctx.accounts.breaker_account;
@@ -26,10 +21,11 @@ pub mod anchor_circuit_breaker {
         Ok(())
     }
 
-    // A protected business action
     pub fn execute_action(ctx: Context<ExecuteAction>) -> Result<()> {
-        // WEB2 NOTE: The constraint `[account(..., constraint = !breaker.is_paused)]`
-        // below handles the circuit-check automatically!
+        let breaker_account = &ctx.accounts.breaker_account;
+        if breaker_account.is_paused {
+            return Err(BreakerError::CircuitOpen.into());
+        }
         msg!("Executing business logic securely while circuit is CLOSED.");
         Ok(())
     }
@@ -53,10 +49,6 @@ pub struct TogglePause<'info> {
 
 #[derive(Accounts)]
 pub struct ExecuteAction<'info> {
-    /// WEB2 DEVELOPER NOTE:
-    /// This constraint is like your 'if (breaker.state == OPEN) return' logic.
-    /// Anchor throws an error automatically if is_paused is true.
-    #[account(constraint = !breaker_account.is_paused @ BreakerError::CircuitOpen)]
     pub breaker_account: Account<'info, CircuitBreakerAccount>,
 }
 

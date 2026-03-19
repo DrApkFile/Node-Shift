@@ -1,0 +1,127 @@
+{
+  "address": "3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS",
+  "metadata": {
+    "name": "anchor_circuit_breaker",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "execute_action",
+      "discriminator": [
+        246,
+        137,
+        105,
+        113,
+        247,
+        6,
+        223,
+        174
+      ],
+      "accounts": [
+        {
+          "name": "breaker_account"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "breaker_account",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "toggle_pause",
+      "discriminator": [
+        238,
+        237,
+        206,
+        27,
+        255,
+        95,
+        123,
+        229
+      ],
+      "accounts": [
+        {
+          "name": "breaker_account",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "breaker_account"
+          ]
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "CircuitBreakerAccount",
+      "discriminator": [
+        154,
+        108,
+        58,
+        242,
+        38,
+        223,
+        105,
+        86
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CircuitOpen",
+      "msg": "The circuit is currently OPEN. Operations are paused."
+    }
+  ],
+  "types": [
+    {
+      "name": "CircuitBreakerAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_paused",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}

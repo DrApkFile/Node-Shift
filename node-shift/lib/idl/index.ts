@@ -9,6 +9,7 @@ import anchorLeaderboardIdl from "./anchor_leaderboard.json";
 import anchorOrderMatchingIdl from "./anchor_order_matching.json";
 import anchorLeaderElectionIdl from "./anchor_leader_election.json";
 import anchorAuctionIdl from "./anchor_auction.json";
+import anchorCircuitBreakerIdl from "./anchor_circuit_breaker.json";
 
 export const IDL_REGISTRY = {
     "escrow-engine": {
@@ -54,6 +55,10 @@ export const IDL_REGISTRY = {
     "auction-engine": {
         idl: anchorAuctionIdl,
         programId: "DEvYCdsNiLK998bxX4EB59pPnuAvrJhgG6VThjZb5T8d",
+    },
+    "circuit-breaker": {
+        idl: anchorCircuitBreakerIdl,
+        programId: "3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS",
     },
 };
 

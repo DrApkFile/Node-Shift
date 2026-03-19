@@ -5274,7 +5274,7 @@ go 1.20`)
     },
     web3: {
       explanation: "Config PDA stores a 'paused' boolean checked in every instruction.",
-      programId: "Stop11111111111111111111111111111111111111",
+      programId: "3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS",
       implementations: [
         {
           name: "Anchor",
@@ -5284,7 +5284,7 @@ go 1.20`)
               {
                 name: "lib.rs", language: "rust", content: `use anchor_lang::prelude::*;
 
-declare_id!("Stop11111111111111111111111111111111111111");
+declare_id!("3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS");
 
 #[program]
 pub mod circuit_breaker {

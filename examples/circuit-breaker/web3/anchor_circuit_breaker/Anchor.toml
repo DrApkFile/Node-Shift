@@ -6,13 +6,16 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-anchor_circuit_breaker = "27NvjvKsj6FWhjVZve5mhUeymHGnL5b7uLawpHULSoYX"
+anchor_circuit_breaker = "3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS"
+
+[programs.devnet]
+anchor_circuit_breaker = "3KnPCDHyU6fB6tBFndfs7UoM6Mwg4sgmhBS941BefhSS"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

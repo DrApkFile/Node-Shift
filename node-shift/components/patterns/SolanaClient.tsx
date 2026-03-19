@@ -102,6 +102,9 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
   const [bidAmount, setBidAmount] = useState<string>("")
   const [startPrice, setStartPrice] = useState<string>("1.5")
 
+  // Circuit Breaker State
+  const [breakerAccount, setBreakerAccount] = useState<any>(null)
+
   // Anchor Program Setup
   const program = useMemo(() => {
     const config = IDL_REGISTRY[pattern.slug as PatternSlug]
@@ -245,6 +248,17 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
             }
           } catch (e) {
             console.warn("Auction account sync failed")
+          }
+        } else if (pattern.slug === "circuit-breaker") {
+          try {
+            const breakers = await (program as any).account.circuitBreakerAccount.all()
+            if (breakers.length > 0) {
+              setBreakerAccount(breakers[0].account)
+            } else {
+              setBreakerAccount(null)
+            }
+          } catch (e) {
+            console.warn("Breaker sync failed")
           }
         }
       } catch (e) {
@@ -1437,6 +1451,87 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
     }
   }
 
+  const handleInitializeBreaker = async () => {
+    if (!program || !wallet.publicKey) return
+    setLoading(true)
+    setTxSig(null)
+    try {
+      const breakerKeypair = Keypair.generate()
+      const tx = await (program.methods as any)
+        .initialize()
+        .accounts({
+          breakerAccount: breakerKeypair.publicKey,
+          authority: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([breakerKeypair])
+        .rpc()
+
+      setTxSig(tx)
+      toast.success("Circuit Breaker Initialized!")
+    } catch (e: any) {
+      console.error(e)
+      toast.error(`Initialization Failed: ${e.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleToggleBreaker = async () => {
+    if (!program || !wallet.publicKey) return
+    setLoading(true)
+    setTxSig(null)
+    try {
+      const allBreakers = await (program as any).account.circuitBreakerAccount.all()
+      if (allBreakers.length === 0) return
+
+      const tx = await (program.methods as any)
+        .togglePause()
+        .accounts({
+          breakerAccount: allBreakers[0].publicKey,
+          authority: wallet.publicKey,
+        })
+        .rpc()
+
+      setTxSig(tx)
+      toast.success("Circuit State Toggled!")
+    } catch (e: any) {
+      console.error(e)
+      toast.error(`Toggle Failed: ${e.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleExecuteBreakerAction = async () => {
+    if (!program || !wallet.publicKey) return
+    setLoading(true)
+    setTxSig(null)
+    try {
+      const allBreakers = await (program as any).account.circuitBreakerAccount.all()
+      if (allBreakers.length === 0) return
+
+      const tx = await (program.methods as any)
+        .executeAction()
+        .accounts({
+          breakerAccount: allBreakers[0].publicKey,
+        })
+        .rpc()
+
+      setTxSig(tx)
+      toast.success("Protected Action Executed!")
+    } catch (e: any) {
+      console.error(e)
+      if (e.message.includes("CircuitOpen")) {
+        toast.error("Circuit is OPEN!", { description: "Instruction execution blocked by on-chain circuit breaker." })
+      } else {
+        toast.error(`Action Failed: ${e.message}`)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (!wallet.connected) {
     return (
       <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
@@ -1574,7 +1669,7 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                 <div className="flex-1">
                   <p className="text-xs font-bold uppercase tracking-wider text-white">Step 3: Execute Logic</p>
                   <p className="text-[10px] text-gray-500">
-                    {pattern.slug === "escrow-engine" ? "Interact with the Escrow." : pattern.slug === "rbac-access-control" ? "Test permissioned gates." : pattern.slug === "api-key-management" ? "Verify Key identity." : pattern.slug === "idempotency-key" ? "Submit duplicate actions." : pattern.slug === "auction-engine" ? "Place decentralized bids." : "Interact with the Limiter."}
+                    {pattern.slug === "escrow-engine" ? "Interact with the Escrow." : pattern.slug === "rbac-access-control" ? "Test permissioned gates." : pattern.slug === "api-key-management" ? "Verify Key identity." : pattern.slug === "idempotency-key" ? "Submit duplicate actions." : pattern.slug === "auction-engine" ? "Place decentralized bids." : pattern.slug === "circuit-breaker" ? "Test emergency stop." : "Interact with the Limiter."}
                   </p>
                 </div>
               </div>
@@ -2825,6 +2920,142 @@ export function SolanaClient({ pattern }: SolanaClientProps) {
                         <p className="text-[10px] text-center text-gray-500 uppercase tracking-widest leading-relaxed">
                           Min Bid: <span className="text-white font-bold">{(auctionAccount.highestBid.toNumber() / LAMPORTS_PER_SOL + 0.001).toFixed(3)} SOL</span>
                         </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {pattern.slug === "circuit-breaker" && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h3 className="font-outfit font-black uppercase tracking-tighter text-2xl text-white">Emergency Control Panel</h3>
+                    <p className="text-xs text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                      <ShieldCheck className="h-3 w-3 text-primary" />
+                      On-Chain Guard System
+                    </p>
+                  </div>
+                  {breakerAccount ? (
+                    <Badge variant="outline" className={`${breakerAccount.isPaused ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20'} py-1 px-4 uppercase font-black tracking-widest animate-pulse`}>
+                      {breakerAccount.isPaused ? 'CIRCUIT OPEN' : 'CIRCUIT CLOSED'}
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-gray-500/10 text-gray-400 border-gray-500/20 py-1 px-4 uppercase font-black tracking-widest">
+                      OFFLINE
+                    </Badge>
+                  )}
+                </div>
+
+                {!breakerAccount ? (
+                  <div className="bg-black/40 rounded-3xl border border-white/5 p-12 text-center space-y-6">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
+                      <ShieldAlert className="h-10 w-10 text-primary" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-white font-black uppercase tracking-tight text-xl">Deploy Security Guard</h4>
+                      <p className="text-gray-500 text-sm max-w-xs mx-auto">Initialize the circuit breaker state to protect your sensitive on-chain operations.</p>
+                    </div>
+                    <Button
+                      onClick={handleInitializeBreaker}
+                      disabled={loading}
+                      className="h-14 px-12 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 transition-all active:scale-95"
+                    >
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Bootstrap System"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <div className="md:col-span-8 space-y-8">
+                      <div className={`p-8 rounded-3xl border transition-all ${breakerAccount.isPaused ? 'bg-red-500/5 border-red-500/20' : 'bg-green-500/5 border-green-500/20'} relative overflow-hidden`}>
+                        <div className="absolute -top-10 -right-10 opacity-5">
+                          {breakerAccount.isPaused ? <ZapOff className="h-40 w-40 text-red-500" /> : <Zap className="h-40 w-40 text-green-500" />}
+                        </div>
+
+                        <div className="space-y-6 relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                              <Label className="text-[10px] uppercase font-black tracking-widest text-gray-500">Service Status</Label>
+                              <h4 className={`text-4xl font-black uppercase tracking-tight ${breakerAccount.isPaused ? 'text-red-500' : 'text-green-500'}`}>
+                                {breakerAccount.isPaused ? 'Halted' : 'Operational'}
+                              </h4>
+                            </div>
+                            <Button
+                              onClick={handleToggleBreaker}
+                              disabled={loading}
+                              variant="outline"
+                              className={`h-14 px-8 rounded-2xl font-black uppercase text-xs tracking-widest border-2 transition-all ${breakerAccount.isPaused ? 'border-green-500/40 text-green-500 hover:bg-green-500/10' : 'border-red-500/40 text-red-500 hover:bg-red-500/10'}`}
+                            >
+                              {breakerAccount.isPaused ? 'Resume Service' : 'Trigger Emergency Cutoff'}
+                            </Button>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                              <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest">Authority</p>
+                              <p className="font-mono text-[10px] text-white truncate">{breakerAccount.authority.toString()}</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-1">
+                              <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest">State Storage</p>
+                              <p className="font-mono text-[10px] text-white">Circuit Account Active</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white/5 rounded-3xl border border-white/10 p-8 space-y-6">
+                        <div className="flex items-center gap-3">
+                          <Activity className="h-5 w-5 text-primary" />
+                          <h4 className="text-white font-black uppercase tracking-tight text-lg">Protected Instruction Test</h4>
+                        </div>
+                        <p className="text-xs text-gray-400 max-w-xl">
+                          This button triggers a real on-chain instruction that is internally gated by the circuit state.
+                          If the circuit is <span className="text-red-500 font-bold">OPEN</span>, the transaction will revert before any logic executes.
+                        </p>
+                        <Button
+                          onClick={handleExecuteBreakerAction}
+                          disabled={loading}
+                          className="h-14 px-12 bg-white/10 hover:bg-white/20 text-white font-black uppercase tracking-[0.2em] text-xs rounded-2xl border border-white/10"
+                        >
+                          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Attempt Sensitive Action"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-4 space-y-6">
+                      <div className="bg-black/60 rounded-3xl border border-white/5 p-6 space-y-6">
+                        <h5 className="text-[10px] font-black uppercase tracking-widest text-primary">Security Logs</h5>
+                        <div className="space-y-4">
+                          <div className="flex gap-3">
+                            <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-green-500 mt-1" />
+                            <p className="text-[10px] text-gray-400 font-mono"><span className="text-gray-600">[INFO]</span> Circuit initialized as CLOSED.</p>
+                          </div>
+                          {breakerAccount.isPaused && (
+                            <div className="flex gap-3 animate-in fade-in slide-in-from-left-2">
+                              <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-red-500 mt-1 animate-pulse" />
+                              <p className="text-[10px] text-red-400 font-mono"><span className="text-red-900">[WARN]</span> Manual override active. Service halted.</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="p-6 rounded-3xl border border-white/5 bg-gradient-to-br from-white/5 to-transparent space-y-4">
+                        <h5 className="text-[10px] font-black uppercase tracking-widest text-gray-500">Emergency Protocol</h5>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <Lock className="h-3 w-3 text-primary mt-0.5" />
+                            <p className="text-[10px] text-gray-400 leading-relaxed">
+                              <span className="text-white font-bold">In-Program Gate</span>: The is_paused flag is checked atomically at the start of instructions.
+                            </p>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <Key className="h-3 w-3 text-primary mt-0.5" />
+                            <p className="text-[10px] text-gray-400 leading-relaxed">
+                              <span className="text-white font-bold">Admin Only</span>: Only the authority that initialized the breaker can toggle the state.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
