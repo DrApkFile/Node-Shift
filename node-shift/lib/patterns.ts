@@ -5407,14 +5407,14 @@ pub fn process_instruction(
       ],
       clientFolders: [],
       diagram: `graph TD
-    Admin["Admin/DAO"] -->| "1. Detect Emergency" | Admin
-    Admin -->| "2. Call TogglePause()" | Program["Circuit Program"]
-    Program -->| "3. Update Config" | ConfigAcc["Global Config PDA"]
-    User["Regular User"] -->| "4. Call Action" | Program
-    Program -->| "5. Read State" | ConfigAcc
-    ConfigAcc -->| "6. is_paused == true" | Program
-    Program -->| "7. Revert" | User
-    Admin -->| "8. Fix & Resume" | Program`
+    Admin[Admin/DAO] -->|1. Detect Emergency| Admin
+    Admin -->|2. Call TogglePause()| Program[Circuit Program]
+    Program -->|3. Update Config| ConfigAcc[Global Config PDA]
+    User[Regular User] -->|4. Call Action| Program
+    Program -->|5. Read State| ConfigAcc
+    ConfigAcc -->|6. is_paused == true| Program
+    Program -->|7. Revert| User
+    Admin -->|8. Fix & Resume| Program`
     }
   },
   {
