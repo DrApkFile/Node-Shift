@@ -2,7 +2,8 @@
 
 Welcome to **NodeShift**, an educational resource and developer playground designed to onboard Web2 developers into the Web3 ecosystem by mapping familiar system design patterns to their blockchain equivalents.
 
-Check out our live playground at: [**node-shift.vercel.app**](https://node-shift.vercel.app)
+🚀 **Go to Playground:** [**node-shift.vercel.app**](https://node-shift.vercel.app)  
+🎮 **Interactive Guide:** [**How to use the Pattern UIs**](interaction.md)
 
 ---
 
@@ -22,36 +23,38 @@ Transitioning from Web2 to Web3 (specifically Solana/Anchor) can be daunting. Yo
 
 ## 🧩 Patterns in Action
 
-Here are 3 examples of how NodeShift maps familiar concepts to the blockchain:
+Here is how NodeShift maps familiar concepts to the blockchain:
 
 ### 1. Idempotency (Preventing Duplicates)
 In Web2, you use a unique header key and a cache (like Redis) to ensure an operation isn't performed twice. In Web3, we use the property of **Account Creation** (PDAs) to achieve the same result.
 
-| **Web2 (Node.js/Redis)** | **Web3 (Solana/Anchor)** |
-| :--- | :--- |
-| ```javascript
+#### Web2 (Node.js/Redis)
+```javascript
 // Check cache for key
 if (idempotencyStore.has(key)) {
   return res.status(200).json(cached);
 }
 // Process and store
 idempotencyStore.set(key, result);
-``` | ```rust
-// 'init' constraint fails if 
-// the PDA already exists.
+```
+
+#### Web3 (Solana/Anchor)
+```rust
+// 'init' constraint fails if the PDA already exists.
 #[derive(Accounts)]
 pub struct ProcessAction<'info> {
     #[account(init, seeds = [id], ...)]
     pub tracker: Account<'info, Tracker>,
 }
-``` |
+```
+
+---
 
 ### 2. RBAC (Role-Based Access Control)
 Web2 uses middleware to check roles in a database. In Web3, roles are stored in account data, and "middleware" is implemented as constraints on the transaction itself.
 
-| **Web2 (Express Middleware)** | **Web3 (Anchor Constraints)** |
-| :--- | :--- |
-| ```javascript
+#### Web2 (Express Middleware)
+```javascript
 const checkRole = (role) => (req, res, next) => {
   if (user.role !== role) {
     return res.status(403).send();
@@ -59,7 +62,10 @@ const checkRole = (role) => (req, res, next) => {
   next();
 };
 app.post('/admin', checkRole('ADMIN'));
-``` | ```rust
+```
+
+#### Web3 (Anchor Constraints)
+```rust
 #[derive(Accounts)]
 pub struct AdminOnly<'info> {
     #[account(
@@ -67,7 +73,7 @@ pub struct AdminOnly<'info> {
     )]
     pub user: Account<'info, UserProfile>,
 }
-``` |
+```
 
 ---
 
@@ -117,7 +123,7 @@ To explore the Web3 examples in this repository, you'll need the following tools
 ## 🌟 Get Involved
 
 1. **Dive Deep:** Use the repository to explore full environments and detailed comments.
-2. **Visualize:** Visit the [Playground](https://node-shift.vercel.app) to see the code snippets and dependencies in action.
+2. **Visualize:** Visit the [Playground](https://node-shift.vercel.app) and read the [Interaction Guide](interaction.md).
 3. **Contribute:** Join our mission to bridge the dev gap. Open a PR to add a new pattern or language implementation!
 
 NodeShift is here to turn your "Web2 brain" into a "Web3 powerhouse." Happy building! 🦀⛓️
