@@ -44,6 +44,11 @@ export default function Home() {
                   Explore Patterns
                 </Link>
               </Button>
+              <Button variant="outline" size="lg" className="rounded-full px-12 h-16 text-lg font-outfit font-black uppercase tracking-wider border-white/10 hover:bg-white/5" asChild>
+                <Link href="/docs">
+                  Read Migration Guides
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -93,7 +98,7 @@ export default function Home() {
                     Web2 relies on centralized silos and intermediaries. Web3 introduces <strong>sovereignty</strong>. By building on-chain, you ensure your application logic is immutable, your data is transparent, and your users truly own their digital assets. It's the move from "Don't be evil" to "Can't be evil."
                   </p>
                 </div>
-                
+
                 <div className="p-8 rounded-3xl bg-primary/5 border border-primary/10 space-y-4">
                   <h3 className="font-outfit font-bold text-2xl text-white flex items-center gap-3">
                     <span className="text-primary text-3xl">🦀</span> Native Rust
